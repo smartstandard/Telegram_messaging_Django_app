@@ -5,15 +5,19 @@ from django.views import View
 class SendMessageView(View):
     def get(self, request):
         bot_token = 'YOUR_BOT_TOKEN'  # Replace with your bot token
-        username = 'skytech2510'  # The username you want to send a message to
-        message = 'Hello from Django!'
+        username = request.GET.get('username')  # Get the username from the query parameters
+        message = request.GET.get('message')  # Get the message from the query parameters
+
+        if not username:
+            return JsonResponse({'error': 'Username is required.'}, status=400)
         
+        if not message:
+            return JsonResponse({'error': 'Message is required.'}, status=400)
+
         # Step 1: Get updates to find the chat_id
         updates_url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
         updates_response = requests.get(updates_url)
         updates_data = updates_response.json()
-        print('---------------------------------------')
-        print(updates_data)
 
         chat_id = None
 
@@ -25,6 +29,7 @@ class SendMessageView(View):
                 if user and user.get('username') == username:
                     chat_id = message_data['chat']['id']
                     break
+
         # If chat_id is found, send the message
         if chat_id:
             send_message_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
