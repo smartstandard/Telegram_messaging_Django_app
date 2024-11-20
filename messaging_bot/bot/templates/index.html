@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message to Telegram</title>
+    <script>
+        async function sendMessage() {
+            const username = document.getElementById('username').value;
+            const message = document.getElementById('message').value;
+
+            if (!username || !message) {
+                alert('Both username and message are required!');
+                return;
+            }
+
+            const response = await fetch(`/messaging/send-message/?username=${encodeURIComponent(username)}&message=${encodeURIComponent(message)}`, {
+                method: 'GET'
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+            } else {
+                alert('Message sent successfully!');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Send Message to Telegram User</h1>
+    <form onsubmit="event.preventDefault(); sendMessage();">
+        <label for="username">Telegram Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+        <br>
+        <button type="submit">Send Message</button>
+    </form>
+</body>
+</html>
