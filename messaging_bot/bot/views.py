@@ -1,6 +1,8 @@
-import requests
+# messaging/views.py
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views import View
+import requests
 
 class SendMessageView(View):
     def get(self, request):
@@ -41,3 +43,7 @@ class SendMessageView(View):
             return JsonResponse(response.json())
         else:
             return JsonResponse({'error': 'User has not interacted with the bot yet.'})
+
+class IndexView(View):
+    def get(self, request):
+        return render(request, 'index.html')
